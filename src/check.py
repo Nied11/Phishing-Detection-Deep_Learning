@@ -30,3 +30,5 @@ expected_features = [col.lower() for col in expected_features]
 df = df[expected_features]
 
 print("✅ Features aligned successfully!")
+
+

@@ -2,7 +2,7 @@
 import pandas as pd
 
 # Load the dataset (replace with your actual dataset file)
-df = pd.read_csv("output/virus_total_results.csv")
+df = pd.read_csv("dataset\phishing_urls.csv")
 
 # Convert numeric columns only
 df_numeric = df.select_dtypes(include=['number'])

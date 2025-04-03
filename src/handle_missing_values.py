@@ -1,6 +1,6 @@
 import pandas as pd
 
-df = pd.read_csv("output/virus_total_results.csv")
+df = pd.read_csv("dataset\extracted_features_normalized.csv")
 
 # Identify missing values
 missing_values = df.isnull().sum()
@@ -19,6 +19,6 @@ else:
             df[col].fillna(df[col].mode()[0], inplace=True)  # Most frequent value
     
     # Save the cleaned dataset
-    df.to_csv("dataset/extracted_features_filled.csv", index=False)
+    df.to_csv("dataset\extracted_features_filled.csv", index=False)
     
     print("Missing values handled. Updated dataset saved as extracted_features_filled.csv.")

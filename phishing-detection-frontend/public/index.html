@@ -1,0 +1,200 @@
+<!DOCTYPE html> 
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IT352 Course Project</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body, html {
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: Arial, sans-serif;
+            background-color: #eef5d7; /* Light yellowish background */
+            text-align: center;
+        }
+
+        .container {
+            width: 80vw;
+            height: 80vh;
+            max-width: 800px;
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        h2, h3 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        button {
+            font-size: 16px;
+            font-weight: bold;
+            background-color: #4a90e2;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            margin: 10px;
+            cursor: pointer;
+            border-radius: 5px;
+            width: 80%;
+            max-width: 300px;
+        }
+
+        button:hover {
+            background-color: #357abd;
+        }
+
+        button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        textarea {
+            width: 90%;
+            height: 100px;
+            margin: 10px 0;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            resize: none;
+        }
+
+        .loading {
+            font-size: 14px;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container" id="mainScreen">
+        <h2>DEPARTMENT OF INFORMATION TECHNOLOGY</h2>
+        <h3>NATIONAL INSTITUTE OF TECHNOLOGY KARNATAKA, SURATHKAL-575025</h3>
+        <p><strong>Information Assurance and Security (IT352) Course Project</strong></p>
+        <p>Title: <strong>DEPHIDES: Deep Learning Based Phishing Detection System</strong></p>
+        <p><strong>Carried out by:</strong><br> Nidhi Kumari (221IT047) <br> Sneha Singh (221IT063)</p>
+        <button onclick="showInputScreen()">Press here to Enter Input</button>
+        <button onclick="displayOutput()">Press here to display output on Screen</button>
+        <button onclick="storeOutput()">Press here to store the output</button>
+    </div>
+
+    <!-- Input Screen -->
+    <div class="container hidden" id="inputScreen">
+        <h3>Enter Input (URL)</h3>
+        <textarea id="userInput" placeholder="Enter a URL here..."></textarea><br>
+        <button id="submitButton" onclick="predictPhishing()">Submit</button>
+        <button onclick="goBack()">Go Back</button>
+        <p id="loadingMessage" class="loading hidden">Processing... Please wait.</p>
+    </div>
+
+    <!-- Output Screen -->
+    <div class="container hidden" id="outputScreen">
+        <h3>Output</h3>
+        <p id="outputText"></p>
+        <button onclick="storeOutput()">Store Output</button>
+        <button onclick="goBack()">Go Back</button>
+    </div>
+
+    <script>
+        let storedURL = "";
+        let predictionResult = "";
+
+        function showInputScreen() {
+            document.getElementById("mainScreen").classList.add("hidden");
+            document.getElementById("inputScreen").classList.remove("hidden");
+        }
+
+        function goBack() {
+            document.getElementById("inputScreen").classList.add("hidden");
+            document.getElementById("outputScreen").classList.add("hidden");
+            document.getElementById("mainScreen").classList.remove("hidden");
+        }
+
+        async function predictPhishing() {
+            let url = document.getElementById("userInput").value.trim();
+            if (!url) {
+                alert("Please enter a URL.");
+                return;
+            }
+
+            let submitButton = document.getElementById("submitButton");
+            let loadingMessage = document.getElementById("loadingMessage");
+
+            submitButton.disabled = true;
+            loadingMessage.classList.remove("hidden");
+
+            try {
+                let response = await fetch("http://127.0.0.1:5000/predict", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ url: url })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Server Error: ${response.status}`);
+                }
+
+                let data = await response.json();
+                storedURL = url;
+                predictionResult = data.prediction;
+                document.getElementById("outputText").innerHTML = 
+                    `<strong>URL:</strong> ${url} <br> 
+                     <strong>Prediction:</strong> ${predictionResult}`;
+                
+                document.getElementById("inputScreen").classList.add("hidden");
+                document.getElementById("outputScreen").classList.remove("hidden");
+
+            } catch (error) {
+                alert("Error: " + error.message);
+            } finally {
+                submitButton.disabled = false;
+                loadingMessage.classList.add("hidden");
+            }
+        }
+
+        async function storeOutput() {
+            if (!storedURL || !predictionResult) {
+                alert("No prediction available to store.");
+                return;
+            }
+
+            try {
+                let response = await fetch("http://127.0.0.1:5000/store_output", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ url: storedURL, prediction: predictionResult })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Server Error: ${response.status}`);
+                }
+
+                let data = await response.json();
+                alert(data.message);
+
+            } catch (error) {
+                alert("Error: " + error.message);
+            }
+        }
+    </script>
+
+</body>
+</html>

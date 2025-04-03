@@ -2,7 +2,7 @@ import pandas as pd
 
 ROLL_NUMBER = "221IT047"
 
-df = pd.read_csv("output/virus_total_results.csv")
+df = pd.read_csv("dataset\phishing_urls.csv")
 
 # Identify constant columns (where all values are the same)
 constant_columns = [col for col in df.columns if df[col].nunique() == 1]

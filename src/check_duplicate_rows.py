@@ -2,7 +2,7 @@ import pandas as pd
 
 ROLL_NUMBER = "221IT063"
 
-df = pd.read_csv("output/virus_total_results.csv")
+df = pd.read_csv("dataset\phishing_urls.csv")
 
 # Identify duplicate rows (excluding the index column)
 duplicate_rows = df[df.duplicated()].index.tolist()

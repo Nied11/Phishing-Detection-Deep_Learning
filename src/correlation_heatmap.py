@@ -2,8 +2,7 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 
-# Load the dataset (replace with your actual dataset file)
-df = pd.read_csv("output/virus_total_results.csv")
+df = pd.read_csv("dataset\phishing_urls.csv")
 
 # Convert all applicable columns to numeric, coercing errors
 df_numeric = df.apply(pd.to_numeric, errors="coerce")
@@ -28,16 +27,11 @@ sns.heatmap(
     linecolor="black"
 )
 
-# Title for the heatmap
 plt.title("Feature Correlation Heatmap", fontsize=14)
 
-# Save the heatmap as an image
-plt.savefig("221IT047-Heatmap.JPEG", dpi=300, bbox_inches="tight")
+plt.savefig("output/221IT047-Heatmap.JPEG", dpi=300, bbox_inches="tight")
 
-# Show the heatmap
 plt.show()
-
-
 
 
 

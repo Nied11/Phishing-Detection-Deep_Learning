@@ -1,0 +1,15 @@
+.App {  
+    text-align: center;  
+    background-color: #f0f0f0;  
+    padding: 50px;  
+}  
+
+.phishing-detector input {  
+    padding: 10px;  
+    width: 300px;  
+    margin: 10px;  
+}  
+
+.phishing-detector button {  
+    padding: 10px 20px;  
+}  
